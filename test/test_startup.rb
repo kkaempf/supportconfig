@@ -4,7 +4,9 @@ class Startup_test < Test::Unit::TestCase
 
   def test_startup
     # constructor needs 3 arguments
-    assert_raise ArgumentError Supportconfig::Supportconfig.new
+    assert_raise ArgumentError do
+      Supportconfig::Supportconfig.new
+    end
   end
 
 end
