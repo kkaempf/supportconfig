@@ -31,4 +31,4 @@ Set DEBUG environment variable non-empty.
 
 Copyright (c) 2016 SUSE LINUX Products GmbH.
 
-Bicho is licensed under the MIT license. See MIT-LICENSE for details.
+Supportconfig is licensed under the MIT license. See MIT-LICENSE for details.
