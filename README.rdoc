@@ -1,0 +1,34 @@
+= Supportconfig
+
+* http://github.com/kkaempf/supportconfig
+
+== Introduction
+
+Library to access SUSE supportconfig and command line tool.
+
+Its main goal is to be clean and provide a command line tool
+that exposes its features.
+
+== Features
+
+Main use case is easy access to data inside supportconfig.
+
+Plugins can be written to deal with specific needs.
+
+== Extending Supportconfig
+
+Derive your class from Supportconfig::Supportconfig.
+
+== Debugging
+
+Set DEBUG environment variable non-empty.
+
+== Authors
+
+* Klaus Kämpf <kkaempf@suse.de>
+
+== License
+
+Copyright (c) 2016 SUSE LINUX Products GmbH.
+
+Bicho is licensed under the MIT license. See MIT-LICENSE for details.
