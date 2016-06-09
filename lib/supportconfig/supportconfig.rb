@@ -8,8 +8,7 @@ module Supportconfig
   #
 
   class Supportconfig
-    def initialize client, dir, fname
-      @client = client
+    def initialize dir, fname
       @fname = fname
       parse File.join(dir, fname)
     end
