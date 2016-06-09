@@ -14,6 +14,17 @@ module Supportconfig
       parse File.join(dir, fname)
     end
 private
+
+    def callback section, content
+      begin
+        self.send section, content
+#      rescue NameError
+#        STDERR.puts "Section '#{section}' not implemented for #{self.class}"
+      rescue ArgumentError => arg
+        STDERR.puts "Bad content for '#{section}' of #{self.class}"
+        raise
+      end
+    end
     #
     # generic parser for supportconfig .txt files
     #
@@ -38,7 +49,7 @@ private
             # new section start
             if section
               # old section present
-              self.send section, content
+              callback section, content
               section = nil
               content = []
             end
@@ -50,7 +61,7 @@ private
           end
         end
         # send final section
-        self.send section, content if section
+        callback section, content if section
         self.close
       end
     end
