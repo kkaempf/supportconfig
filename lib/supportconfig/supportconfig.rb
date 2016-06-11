@@ -8,20 +8,37 @@ module Supportconfig
   #
 
   class Supportconfig
-    def initialize dir, fname
+    #
+    # Constructor
+    #
+    # @param
+    #  handle [String|Enumerable] director name or TarReader
+    #  fname  [String] file to read (from directory or tarball)
+    #
+    def initialize handle, fname
       @fname = fname
-      parse File.join(dir, fname)
+      if handle.is_a? Enumerable
+        # assume TarReader
+        r = Regexp.new(fname)
+        handle.each do |f|
+          next unless f.full_name =~ r
+          puts "Found #{f.full_name}"
+          parse f
+          break
+        end
+      else
+        # assume directory
+        File.open(File.join(handle, fname)) do |f|
+          parse f
+        end
+      end
     end
 private
 
     def callback section, content
-      begin
-        self.send section, content
-#      rescue NameError
-#        STDERR.puts "Section '#{section}' not implemented for #{self.class}"
-      rescue ArgumentError => arg
-        STDERR.puts "Bad content for '#{section}' of #{self.class}"
-        raise
+      sym = section.to_sym
+      if self.respond_to? sym
+        self.send sym, content
       end
     end
     #
@@ -37,32 +54,32 @@ private
     #
     # the section name is used as a callback name
  
-    def parse file
-      File.open(file) do |f|
-        content = []
-        section = nil
-        f.each do |l|
-          l.chomp!
-          next if l.empty?
-          if l =~ /#==\[ (.*) \]===/
-            # new section start
-            if section
-              # old section present
-              callback section, content
-              section = nil
-              content = []
-            end
-            section = $1.downcase.tr(" ", "_")
-          elsif section
-            content << l
-          else
-            # skip header
-          end
-        end
-        # send final section
-        callback section, content if section
-        self.close
+    def parse io
+      content = []
+      section = nil
+      unless io.respond_to? :each
+        io = io.read.split("\n")
       end
+      io.each do |l|
+        l.chomp!
+        next if l.empty?
+        if l =~ /#==\[ (.*) \]===/
+          # new section start
+          if section
+            # old section present
+            callback section, content
+            section = nil
+            content = []
+          end
+          section = $1.downcase.tr(" ", "_")
+        elsif section
+          content << l
+        else
+          # skip header
+        end
+      end
+      # send final section
+      callback section, content if section
     end
 public 
     #
