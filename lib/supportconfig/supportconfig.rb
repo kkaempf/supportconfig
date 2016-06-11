@@ -63,7 +63,15 @@ private
       io.each do |l|
         l.chomp!
         next if l.empty?
-        if l =~ /#==\[ (.*) \]===/
+        # prevent UTF-8 parse errors for lines like
+        # "  <4>ACPI: XSDT df620340 000B4 (v01 HP     ProLiant 00000002   \xD2? 0000162E)"        
+        begin
+          section_start = (l[0,1] == '#') && (l =~ /#==\[ (.*) \]===/)
+        rescue
+          STDERR.puts "Parse error: #{l.inspect}"
+          raise
+        end
+        if section_start
           # new section start
           if section
             # old section present
